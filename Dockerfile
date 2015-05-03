@@ -26,12 +26,8 @@ RUN apt-get update && apt-get install -y \
     apt-get remove -y dpkg-dev systemtap-sdt-dev &&\
     apt-get autoremove -y 
 EXPOSE 3306
-COPY docker.cnf /etc/mysql/conf.d/
-RUN service mysql start &&\
-    echo "INSTALL PLUGIN sphinx SONAME 'ha_sphinx.so';\
-          GRANT ALL ON *.* TO admin@'%' IDENTIFIED BY 'changeme' WITH GRANT OPTION; FLUSH PRIVILEGES;" \
-    | mysql -uroot -h localhost
-ENTRYPOINT ["/usr/bin/mysqld_safe"]
-#CMD /usr/bin/mysqld_safe
-#RUN mysqladmin --silent --wait=30 ping || exit 1 && echo "INSTALL PLUGIN sphinx SONAME 'ha_sphinx.so';" | mysql -uroot -h localhost
+COPY conf/docker.cnf /etc/mysql/conf.d/
+COPY conf/mysqld_start.sh /usr/local/bin/
+RUN chmod a+x /usr/local/bin/mysqld_start.sh
+ENTRYPOINT ["/usr/local/bin/mysqld_start.sh"]
 
