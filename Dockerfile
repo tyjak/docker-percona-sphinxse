@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y \
     percona-server-server-5.5\
     percona-server-client-5.5 &&\
     apt-get source percona-server-server-5.5 &&\
+    apt-get build-dep -s percona-server-server-5.5 | grep "Inst" | cut -d" " -f2 | sed 's/$/ /' | tr -d '\n' > percona-build.dep &&\
     apt-get build-dep -y percona-server-server-5.5 &&\
     tar -xzvf sphinx-2.2.9-release.tar.gz &&\
     mkdir percona-server-5.5-5.5.42-37.1/storage/sphinx/ &&\
@@ -19,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     ./configure --with-sphinx-storage-engine &&\
     cd storage/sphinx/ && make &&\
     cp ha_sphinx.so /usr/lib/mysql/plugin &&\
-    cd /usr/local/src && rm -rf * &&\
+    cd /usr/local/src && cat percona-build.dep | xargs apt-get -y remove && rm -rf * &&\
     apt-get remove -y dpkg-dev systemtap-sdt-dev &&\
     apt-get autoremove -y 
 EXPOSE 3306
