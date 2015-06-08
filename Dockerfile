@@ -11,7 +11,8 @@ RUN apt-get update && apt-get install -y \
     dpkg-dev\
     systemtap-sdt-dev\
     percona-server-server-${PERCONA_VERSION}\
-    percona-server-client-${PERCONA_VERSION} &&\
+    percona-server-client-${PERCONA_VERSION}\
+    percona-xtrabackup &&\
     apt-get source percona-server-server-${PERCONA_VERSION} &&\
     apt-get build-dep -s percona-server-server-${PERCONA_VERSION} | grep "Inst" | cut -d" " -f2 | sed 's/$/ /' | tr -d '\n' > percona-build.dep &&\
     apt-get build-dep -y percona-server-server-${PERCONA_VERSION} &&\
